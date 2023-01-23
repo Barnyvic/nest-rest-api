@@ -1,6 +1,7 @@
 import { readFile, writeFile } from 'fs/promises';
+import { CreateMessagesDto } from './dto/create-message.dto';
 
-export class messagesRepository {
+export class MessagesRepository {
   async findOne(id: string) {
     const content = await readFile('messages.json', 'utf8');
     const messages = JSON.parse(content);
@@ -12,8 +13,7 @@ export class messagesRepository {
     const messages = JSON.parse(content);
     return messages;
   }
-
-  async create(message: string) {
+  async create(message: CreateMessagesDto) {
     const content = await readFile('messages.json', 'utf8');
     const messages = JSON.parse(content);
 
