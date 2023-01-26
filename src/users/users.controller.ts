@@ -1,4 +1,9 @@
-import { Controller, Post } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  HttpStatus,
+  Post,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import {
   Body,
@@ -13,10 +18,21 @@ import { UsersService } from './users.service';
 @Controller('auth')
 export class UsersController {
   constructor(private userService: UsersService) {}
+
+  // create user account
   @Post('/signup')
-  createUser(@Body() createUserdto: CreateUserDto) {
-    this.userService.createUser(createUserdto);
+  async createUser(@Body() createUserdto: CreateUserDto) {
+    const user = await this.userService.findOneByEmail(createUserdto.email);
+    if (user) {
+      throw new BadRequestException({
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Email Already In Use',
+      });
+    } else if (!user) {
+      this.userService.createUser(createUserdto);
+    }
   }
+
   @Get()
   findAllUsers(@Query('email') email: string) {
     return this.userService.findAll(email);

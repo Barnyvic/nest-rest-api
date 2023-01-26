@@ -11,13 +11,15 @@ export class UsersService {
     @InjectRepository(UserEntity) private repository: Repository<UserEntity>,
   ) {}
 
-  findOneByEmail(email: string) {
-    const user = this.repository.findOne({ where: { email } });
+  async findOneByEmail(email: string) {
+    const user = await this.repository.findOne({ where: { email } });
     return user;
   }
 
   async createUser(body: CreateUserDto) {
-    const userEmail = await this.findOneByEmail(body.email);
+    // const userEmail = await this.repository.findOne({
+    //   where: { email: body.email },
+    // });
     const user = this.repository.create(body);
     return this.repository.save(user);
   }
