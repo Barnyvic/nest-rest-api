@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Controller,
+  NotFoundException,
   HttpStatus,
   Post,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import {
   Query,
 } from '@nestjs/common/decorators';
 import { UsersService } from './users.service';
+import { UpdateUserDto } from './dto/update-users.dto';
 
 @Controller('auth')
 export class UsersController {
@@ -39,17 +41,19 @@ export class UsersController {
   }
 
   @Get('/:id')
-  findUserById(@Param('id') id: number) {
-    return this.userService.findOne(id);
+  async findUserById(@Param('id') id: string) {
+    const result = await this.userService.findOne(parseInt(id));
+    if (!result) throw new NotFoundException('Data not found');
+    return result;
   }
 
   @Put('/:id')
-  updateUser(@Param('id') id: number, body: CreateUserDto) {
-    return this.userService.updateUser(id, body);
+  updateUser(@Param('id') id: string, @Body() body: UpdateUserDto) {
+    return this.userService.updateUser(parseInt(id), body);
   }
 
   @Delete('/:id')
-  deleteUser(@Param('id') id: number) {
-    return this.userService.removeUser(id);
+  deleteUser(@Param('id') id: string) {
+    return this.userService.removeUser(parseInt(id));
   }
 }

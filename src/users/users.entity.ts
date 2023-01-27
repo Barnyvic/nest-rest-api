@@ -25,11 +25,11 @@ export class UserEntity {
 
   @AfterRemove()
   removeUser() {
-    console.log(`user create ${this.id}`);
+    console.log(`user remove ${this.id}`);
   }
 
   @AfterUpdate()
   updateUser() {
-    console.log(`user create ${this.id}`);
+    console.log(`user update ${this.id}`);
   }
 }

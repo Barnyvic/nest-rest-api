@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 import { UserEntity } from './users.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CreateUserDto } from './dto/createUser.dto';
-import { ForbiddenException } from '@nestjs/common/exceptions';
+import { NotFoundException } from '@nestjs/common/exceptions';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +37,7 @@ export class UsersService {
     const user = await this.findOne(id);
 
     if (!user) {
-      throw new ForbiddenException('User not found');
+      throw new NotFoundException(`User not found`);
     }
     Object.assign(user, attribute);
     return this.repository.save(user);
@@ -47,7 +47,7 @@ export class UsersService {
     const user = await this.findOne(id);
 
     if (!user) {
-      throw new ForbiddenException('User not found');
+      throw new NotFoundException('User not found');
     }
 
     return this.repository.remove(user);
