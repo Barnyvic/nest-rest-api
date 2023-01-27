@@ -13,11 +13,15 @@ import {
   Param,
   Put,
   Query,
+  UseInterceptors,
 } from '@nestjs/common/decorators';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-users.dto';
+import { Serialize } from 'src/interceptors/serialize.interceptors';
+import { UserDto } from './dto/user.dto';
 
 @Controller('auth')
+@Serialize(UserDto) // used  exclude  some object from showing in the browser
 export class UsersController {
   constructor(private userService: UsersService) {}
 
@@ -40,6 +44,7 @@ export class UsersController {
     return this.userService.findAll(email);
   }
 
+  // @Serialize(UserDto) // used  exclude  some object from showing in the browser
   @Get('/:id')
   async findUserById(@Param('id') id: string) {
     const result = await this.userService.findOne(parseInt(id));
