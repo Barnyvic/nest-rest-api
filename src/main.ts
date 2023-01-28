@@ -7,6 +7,7 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
+      forbidNonWhitelisted: false, //things not in the dto will not be allowed
     }),
   );
   await app.listen(3000);
