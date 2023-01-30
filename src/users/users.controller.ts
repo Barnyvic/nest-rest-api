@@ -13,30 +13,26 @@ import {
   Param,
   Put,
   Query,
-  UseInterceptors,
 } from '@nestjs/common/decorators';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-users.dto';
 import { Serialize } from 'src/interceptors/serialize.interceptors';
 import { UserDto } from './dto/user.dto';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('auth')
 @Serialize(UserDto) // used  exclude  some object from showing in the browser
 export class UsersController {
-  constructor(private userService: UsersService) {}
+  constructor(
+    private userService: UsersService,
+    private authService: AuthService,
+  ) {}
 
   // create user account
   @Post('/signup')
   async createUser(@Body() createUserdto: CreateUserDto) {
-    const user = await this.userService.findOneByEmail(createUserdto.email);
-    if (user) {
-      throw new BadRequestException({
-        status: HttpStatus.BAD_REQUEST,
-        error: 'Email Already In Use',
-      });
-    } else if (!user) {
-      this.userService.createUser(createUserdto);
-    }
+    const user = await this.authService.signUp(createUserdto);
+    return user;
   }
 
   @Get()
