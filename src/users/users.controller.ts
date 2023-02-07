@@ -35,9 +35,10 @@ export class UsersController {
     return user;
   }
 
-  @Get()
-  findAllUsers(@Query('email') email: string) {
-    return this.userService.findAll(email);
+  @Post('/signin')
+  async signInUser(@Body() createUserdto: CreateUserDto) {
+    const user = await this.authService.signIn(createUserdto.email,createUserdto.password)
+    return user;
   }
 
   // @Serialize(UserDto) // used  exclude  some object from showing in the browser
