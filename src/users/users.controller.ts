@@ -53,6 +53,11 @@ export class UsersController {
     return user;
   }
 
+  @Post('/signout')
+  async signOut(@Session() session: any) {
+    session.userI.id = null;
+  }
+
   // @Serialize(UserDto) // used  exclude  some object from showing in the browser
   @Get('/:id')
   async findUserById(@Param('id') id: string) {
