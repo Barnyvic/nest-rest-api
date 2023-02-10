@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import * as bcrypt from 'bcryptjs';
 import { CreateUserDto } from 'src/users/dto/createUser.dto';
@@ -19,11 +23,14 @@ export class AuthService {
     return user;
   }
 
-  //   async saltPassword(
-  //     password: string,
-  //   ): Promise<{ salt: string; hash: string }> {
-  //     const salt = await bcrypt.genSalt();
-  //     const hash = await bcrypt.hash(password, salt);
-  //     return { hash, salt };
-  //   }
+  async signIn(email: string, password: string) {
+    const [user] = await this.userService.findAll(email);
+    if (!user) {
+      throw new NotFoundException('User not Found');
+    }
+    const verified = await bcrypt.compare(password, user.password);
+
+    if (!verified) throw new BadRequestException('Bad password ');
+    return user;
+  }
 }

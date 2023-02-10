@@ -4,6 +4,7 @@ import {
   NotFoundException,
   HttpStatus,
   Post,
+  Session,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
 import {
@@ -30,14 +31,31 @@ export class UsersController {
 
   // create user account
   @Post('/signup')
-  async createUser(@Body() createUserdto: CreateUserDto) {
+  async createUser(
+    @Body() createUserdto: CreateUserDto,
+    @Session() session: any,
+  ) {
     const user = await this.authService.signUp(createUserdto);
+    session.userId = user.id;
     return user;
   }
 
-  @Get()
-  findAllUsers(@Query('email') email: string) {
-    return this.userService.findAll(email);
+  @Post('/signin')
+  async signInUser(
+    @Body() createUserdto: CreateUserDto,
+    @Session() session: any,
+  ) {
+    const user = await this.authService.signIn(
+      createUserdto.email,
+      createUserdto.password,
+    );
+    session.userI.id = user.id;
+    return user;
+  }
+
+  @Post('/signout')
+  async signOut(@Session() session: any) {
+    session.userI.id = null;
   }
 
   // @Serialize(UserDto) // used  exclude  some object from showing in the browser
